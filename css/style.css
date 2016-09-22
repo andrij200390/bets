@@ -1,0 +1,44 @@
+.bets-info
+{
+	margin-bottom: 25px;
+    font-size: 18px;
+}
+.bets-info .desc
+{
+    border-bottom:solid 2px #4db2ec;
+}
+.bets-info .rating
+{
+    border-bottom:solid 2px #4db2ec;
+}
+.bets-info .rating img
+{
+    display: inline-block;
+    margin-bottom: 10px;
+}
+.bets-info .recomend
+{
+    border-bottom:solid 2px #4db2ec;
+}
+.bets-info .recomend .green
+{
+    color:green;
+}
+.bets-info .recomend .red
+{
+    color:crimson;
+}
+.bets-info .posneg
+{
+    border-bottom:solid 2px #4db2ec;
+}
+.bets-info .posneg .positive
+{
+    margin-left: 20px;
+    color:green;
+}
+.bets-info .posneg .negative
+{
+    margin-left: 20px;
+    color:crimson;
+}
