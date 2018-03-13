@@ -2,8 +2,8 @@
 /*
 Plugin Name: Bets
 Plugin URI: http://andrij200390.96.lt
-Description: Создание типа записи Букмекер. Для него будет возможность писать рейтинг, добавлять ссылку
-Version: 1.0.0
+Description: Создание типа записи Букмекер. Для него будет возможность писать рейтинг, добавлять ссылку, валюту, описание, и другое. Имеет свой вывод, заточенный под тему consult press. В плагине имеется возможность вывода топ 3 букмекеров, для етого нужно вставить шорткод [topbets], или вставить виджет ТОП5 букмекеров в нужный сайдбар. Для вывода всех букмекеров используется шорткода [allbets]. Также есть возможность вставки в виде табов (последние и топ букмекеры). Вывод описания тоже сделан через табы. Также добавлен визуальный редактор для описания букмекеров. Добавлены метки для типов записи букмекер.
+Version: 2.0.3
 Author: Andrew Golovko
 Author URI: http://andrij200390.96.lt
 */
@@ -24,6 +24,12 @@ Author URI: http://andrij200390.96.lt
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+
+/*1. БЛОК инициализации и установки плагина*/
+/*2. БЛОК вывода в админке*/
+/*3. БЛОК вывода в шаблоне*/
+/*4. БЛОК замены  слуга для всех записей, страниц, категорий, к формату сайт/имя поста, теги и визуальный редактор*/
+
 if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('You are not allowed to call this page directly.'); }
  
 if (!class_exists('bets')) {
@@ -85,10 +91,13 @@ if (!class_exists('bets')) {
         //если не в админке подгружаем стили и шрифты для темы
         else {
         add_action('wp_print_styles', array(&$this, 'site_load_styles'));
+        add_action( 'wp_enqueue_scripts',  array(&$this, 'site_load_scripts' ));
 		
         //вывод шорткодом формы
-        add_shortcode('bets', array (&$this, 'bets_out'));
-        
+        add_shortcode('topbets', array (&$this, 'bets_out'));
+        add_shortcode('allbets', array (&$this, 'allbets_out'));
+        add_shortcode('sharebtn', array (&$this, 'sharebtn_out'));
+                
         }
     }
         
@@ -142,26 +151,32 @@ if (!class_exists('bets')) {
      global $wpdb;
      $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}bets");
     }
-   
+        
+      
     public $data = array();
        
     // фу-я вывода (что будет выводится в шорткоде)    
      function bets_out()
         {
-         /*.WP_PLUGIN_URL.'/'.dirname(plugin_basename(__FILE__)).*/
-        //'.WP_PLUGIN_URL.'/'.dirname(plugin_basename(__FILE__)).'/mail.php
-            $html = '<form id="bets" action="" method="post">
-                        <input type="text" name="name" placeholder="First Name">
-                        <input type="text" name="email" placeholder="name@server">
-                        <input type="text" name="phone" placeholder="123456789">
-                        <input id="btn" type="submit" value="Send"/>
-                    </form><div id="result_form"><div>';
-        
-         return $html;
-        }
-        
-        
   
+        include('topshortcode.php');
+         
+        }
+    
+       
+	function allbets_out()
+        {
+  
+        include('allshortcode.php');
+        //include('betsshortcode.php');
+         
+        }
+	function sharebtn_out()
+        {
+        include('sharebtn.php');
+        //include('betsshortcode.php');
+        }
+     
 
     /**
      * Загрузка необходимых стилей для страницы управления
@@ -173,6 +188,13 @@ if (!class_exists('bets')) {
      wp_register_style('betsSiteCss', $this->plugin_url .'css/style.css' );
      // Добавляем стили
      wp_enqueue_style('betsSiteCss');
+    }
+	 function site_load_scripts()
+    {
+		wp_register_script( 'jquery', $this->plugin_url .'js/jquery-1.9.0.min.js' );
+		wp_enqueue_script( 'jquery' ); 
+		wp_register_script( 'myjs', $this->plugin_url .'js/site-scripts.js' );
+		wp_enqueue_script( 'myjs' ); 
     }
         
         /*function admin_generate_menu()
@@ -213,14 +235,10 @@ if (!class_exists('bets')) {
             'has_archive' => true,
             'hierarchical' => false,
             'menu_position' => 22,
-            'supports' => array('title','editor','thumbnail','custom-fields')
+            'supports' => array('title','editor','thumbnail','comments','custom-fields')
           );
           register_post_type('bets',$args);
         }
-        
-        
-       
-        
 
         //обновление надписей для типа записи букмекер
         function bets_updated_messages( $messages ) {
@@ -247,8 +265,6 @@ if (!class_exists('bets')) {
                 }
         
                 
-        
-        
                 function create_bets_taxonomies(){
                   // определяем заголовки для 'genre'
                   $labels = array(
@@ -273,10 +289,9 @@ if (!class_exists('bets')) {
                     'rewrite' => array( 'slug' => 'betscat' ),
                   ));
                 }
-        
-                
-
-                //фу-я для вывода блока где нужно заполнять поля
+/*1. БЛОК инициализации и установки плагина*/
+/*2. БЛОК вывода в админке*/
+                //фу-я для вывода блока в админке где нужно заполнять поля
                 function bets_fields() {
                    add_meta_box( 'extra_fields', 'Поля характеристики букмекера', array(&$this,'bets_fields_box_func'), 'bets', 'normal', 'high'  );
                 }
@@ -286,13 +301,13 @@ if (!class_exists('bets')) {
                 ?>
                 <p class="bets"><label>Валюта <br /><input type="text" name="extra[сurrency]" value="<?php echo get_post_meta($post->ID, 'сurrency', 1); ?>" style="width:50%" /></label></p>
                 
-                <p class="bets"><label>Минимальная ставка <br /><input type="text" name="extra[minrate]" value="<?php echo get_post_meta($post->ID, 'minrate', 1); ?>" style="width:50%" /></label></p>
+               <!-- <p class="bets"><label>Минимальная ставка <br /><input type="text" name="extra[minrate]" value="<?php //echo get_post_meta($post->ID, 'minrate', 1); ?>" style="width:50%" /></label></p>
 
-                <p class="bets"><label>Минимальный депозит <br /><input type="text" name="extra[mindep]" value="<?php echo get_post_meta($post->ID, 'mindep', 1); ?>" style="width:50%" /></label></p>
+                <p class="bets"><label>Минимальный депозит <br /><input type="text" name="extra[mindep]" value="<?php //echo get_post_meta($post->ID, 'mindep', 1); ?>" style="width:50%" /></label></p>-->
             
                <p class="bets">
-               <label>Другое описание: языки, поддержка електронных кошельков, счётов и др. <br />
-                       <textarea style="width:50%" name="extra[desc]" placeholder="Здесь перечисляем способы оплаты, страны в которых работает и т.д."><?php echo get_post_meta($post->ID, 'desc', 1); ?></textarea>
+               <label><b>Другое описание: языки, поддержка електронных кошельков, счётов и др.</b> <br />
+                       <textarea id="desc" style="width:50%" name="extra[desc]" placeholder="Здесь перечисляем способы оплаты, страны в которых работает и т.д."><?php echo get_post_meta($post->ID, 'desc', 1); ?></textarea>
                </label>
                </p>
                
@@ -321,16 +336,20 @@ if (!class_exists('bets')) {
                 </p>
                 
                 <p class="bets">
-               <label>Подожительно:<br />
-                       <textarea style="width:50%" name="extra[positive]" placeholder="Здесь пишем положительные черты конторы"><?php echo get_post_meta($post->ID, 'positive', 1); ?></textarea>
+               <label><b>Подожительно:</b><br />
+                       <textarea id = "positive" style="width:50%" name="extra[positive]" placeholder="Здесь пишем положительные черты конторы"><?php echo get_post_meta($post->ID, 'positive', 1); ?></textarea>
                </label>
                </p>
                <p class="bets">
-               <label>Отрицательно:<br />
-                       <textarea style="width:50%" name="extra[negative]" placeholder="Здесь пишем отрицательные черты конторы"><?php echo get_post_meta($post->ID, 'negative', 1); ?></textarea>
+               <label><b>Отрицательно:</b><br />
+                       <textarea  id="negative" style="width:50%" name="extra[negative]" placeholder="Здесь пишем отрицательные черты конторы"><?php echo get_post_meta($post->ID, 'negative', 1); ?></textarea>
                </label>
                </p>
-
+				<style>
+				#wp-desc-wrap, #wp-positive-wrap, #wp-negative-wrap{
+					display:none;
+				}
+				</style>
                 <input type="hidden" name="extra_fields_nonce" value="<?php echo wp_create_nonce(__FILE__); ?>" />
                 <?php
                 }
@@ -381,7 +400,8 @@ if (!class_exists('bets')) {
 
                 echo get_post_meta($post_id, 'recomend', 1);
             }
-        
+/*2. БЛОК вывода в админке*/
+/*3. БЛОК вывода в шаблоне*/
             //инициализация шаблона для типа записи букмекер
            function include_template_function( $template_path ) {
             if ( get_post_type() == 'bets' ) {
@@ -397,7 +417,7 @@ if (!class_exists('bets')) {
                     }
                 }
                //если таксономия подключаем шаблон для таксономии 
-                if ( is_tax() ) {
+                if ( is_archive() ) {
                     // checks if the file exists in the theme first,
                     // otherwise serve the file from the plugin
                     if ( $theme_file = locate_template( array ( 'taxonomy-betscat.php' ) ) ) {
@@ -409,11 +429,252 @@ if (!class_exists('bets')) {
             }
             return $template_path;
         }
-           
+        // Класс виджета
+        
 
 
     }
+        /*регистрация виджетов: вывод топ, вывод последних, и вывод в виде табуляции с переключателями*/
+        //вне класса создаем виджет для вывода топ букмекеров
+            class Top_Bets_Widget extends WP_Widget {
+
+            function __construct() {
+                // Запускаем родительский класс
+                parent::__construct( '', 'ТОП-5 Букмекеров', array('description'=>'Вывод 5 букмекеров по убыванию рейтинга') );
+            }
+
+            // Вывод виджета
+            function widget( $args, $instance ){
+                $title = apply_filters( 'widget_title', $instance['title'] );
+
+                echo $args['before_widget'];
+
+                
+                echo $args['before_title'] . "ТОП-5 Букмекеров" . $args['after_title'];
+
+                include('topshortcode.php');
+
+                echo $args['after_widget'];
+            }
+
+            // Сохранение настроек виджета (очистка)
+            function update( $new_instance, $old_instance ) {
+            }
+
+            // html форма настроек виджета в Админ-панели
+            function form( $instance ) {
+            }
+        }
+
+        // Регистрация класса виджета
+        add_action( 'widgets_init',  'top_bets_register_widgets' );
+        function top_bets_register_widgets() {
+            register_widget( 'Top_Bets_Widget' );
+        }
+		
+		
+		//вне класса создаем виджет для вывода всех букмекеров
+            class All_Bets_Widget extends WP_Widget {
+
+            function __construct() {
+                // Запускаем родительский класс
+                parent::__construct( '', 'Последние обзоры букмекеро', array('description'=>'Вывод последних обзоров букмекеров') );
+            }
+
+            // Вывод виджета
+            function widget( $args, $instance ){
+                $title = apply_filters( 'widget_title', $instance['title'] );
+
+                echo $args['before_widget'];
+
+                
+                echo $args['before_title'] . "Последние обзоры букмекеров" . $args['after_title'];
+
+                include('allshortcode.php');
+
+                echo $args['after_widget'];
+            }
+
+            // Сохранение настроек виджета (очистка)
+            function update( $new_instance, $old_instance ) {
+            }
+
+            // html форма настроек виджета в Админ-панели
+            function form( $instance ) {
+            }
+        }
+
+        // Регистрация класса виджета
+        add_action( 'widgets_init',  'all_bets_register_widgets' );
+        function all_bets_register_widgets() {
+            register_widget( 'All_Bets_Widget' );
+        }
+    
+    
+        /*регистрация виджета для вывода букмекеров в виде переключаемыхх списков*/
+        class List_Bets_Widget extends WP_Widget {
+
+            function __construct() {
+                // Запускаем родительский класс
+                parent::__construct( '', 'Списки букмекеров', array('description'=>'Вывод букмекеров в виде переключаемого списка, топ и последних') );
+            }
+
+            // Вывод виджета
+            function widget( $args, $instance ){
+            echo $args['before_widget'];
+            include('betsshortcode.php');
+            echo $args['after_widget'];
+            }
+
+            // Сохранение настроек виджета (очистка)
+            function update( $new_instance, $old_instance ) {
+            }
+
+            // html форма настроек виджета в Админ-панели
+            function form( $instance ) {
+            }
+        }
+
+        // Регистрация класса виджета
+        add_action( 'widgets_init',  'list_bets_register_widgets' );
+        function list_bets_register_widgets() {
+            register_widget( 'List_Bets_Widget' );
+        }
+		//виджет для кнопок поделиться
+		class Share_Btn_Widget extends WP_Widget {
+
+            function __construct() {
+                // Запускаем родительский класс
+                parent::__construct( '', 'Кнопки поделиться', array('description'=>'Вывод кнопок поделиться ВК, ФБ, Твиттер') );
+            }
+
+            // Вывод виджета
+            function widget( $args, $instance ){
+            echo $args['before_widget'];
+            include('sharebtn.php');
+            echo $args['after_widget'];
+            }
+
+            // Сохранение настроек виджета (очистка)
+            function update( $new_instance, $old_instance ) {
+            }
+
+            // html форма настроек виджета в Админ-панели
+            function form( $instance ) {
+            }
+        }
+
+        // Регистрация класса виджета
+        add_action( 'widgets_init',  'share_btn_widgets' );
+        function share_btn_widgets() {
+            register_widget( 'Share_Btn_Widget' );
+        }
+        
+/*3. БЛОК вывода в шаблоне*/
+/*4. БЛОК замены  слуга для всех записей, страниц, категорий, к формату сайт/имя поста */
+		//удалям слуг для таксономии из юрл
+		function remove_slug( $post_link, $post, $leavename ) {
+		if ( 'bets' != $post->post_type || 'publish' != $post->post_status ) {
+		return $post_link;
+		}
+		$post_link = str_replace( '/' . $post->post_type . '/', '/', $post_link );
+		return $post_link;
+		}
+		add_filter( 'post_type_link', 'remove_slug', 10, 3 );
+
+		function parse_request( $query ) {
+		if ( ! $query->is_main_query() )
+		return;
+		 
+		if ( 2 != count( $query->query ) || ! isset( $query->query['page'] ) ) {
+		return;
+		}
+		 
+		if ( ! empty( $query->query['name'] ) ) {
+		$query->set( 'post_type', array( 'post', 'bets', 'page' ) );
+		}
+		}
+		add_action( 'pre_get_posts', 'parse_request' );
+		//добавляем метки для типов записи букмекер
+		function true_apply_tags_for_bets(){
+			add_meta_box( 'tagsdiv-post_tag', 'Теги', 'post_tags_meta_box', 'bets', 'side', 'normal' ); // сначала добавляем метабокс меток
+			register_taxonomy_for_object_type('post_tag', 'bets'); // затем включаем их поддержку страницами wp
+		}
+		 
+		add_action('admin_init','true_apply_tags_for_bets');
+ 
+		function true_expanded_request_post_tags($q) {
+			if (isset($q['tag'])) // если в запросе присутствует параметр метки
+				$q['post_type'] = array('post', 'bets');
+			return $q;
+		}
+		 
+		add_filter('request', 'true_expanded_request_post_tags');
+		//добавляем редактор для все текстареа
+		/*
+		 * функция добавления редактора 
+		 */
+		function true_desc_editor() {
+			$sett = array('media_buttons' => false, 'teeny' => false, 'textarea_name'=>'new-desc');
+			global $post;
+			wp_editor( get_post_meta($post->ID, 'new-desc', true ), 'desc' , $sett);
+		}
+		 
+		add_action( 'edit_form_advanced', 'true_desc_editor' );
+		add_action( 'edit_page_form', 'true_desc_editor' );
+		 
+		/*
+		 * функция сохранения данных
+		 */
+		function true_save_desc_editor($post_id){
+			update_post_meta($post_id, 'new-desc', $_POST['new-desc']);
+		}
+		 
+		add_action('save_post', 'true_save_desc_editor');
+		/*--*/
+		
+		function true_positive_editor() {
+			$sett = array('media_buttons' => false, 'teeny' => false, 'textarea_name'=>'new-desc');
+			global $post;
+			wp_editor( get_post_meta($post->ID, 'new-positive', true ), 'positive', $sett );
+		}
+		 
+		add_action( 'edit_form_advanced', 'true_positive_editor' );
+		add_action( 'edit_page_form', 'true_positive_editor' );
+		 
+		/*
+		 * функция сохранения данных
+		 */
+		 
+		function true_save_positive_editor($post_id){
+			update_post_meta($post_id, 'new-positive', $_POST['new-positive']);
+		}
+		 
+		add_action('save_post', 'true_save_positive_editor');
+		
+		/*---*/
+		
+		function true_negative_editor() {
+			$sett = array('media_buttons' => false, 'teeny' => false, 'textarea_name'=>'new-desc');
+			global $post;
+			wp_editor( get_post_meta($post->ID, 'new-negative', true ), 'negative', $sett );
+		}
+		 
+		add_action( 'edit_form_advanced', 'true_negative_editor' );
+		add_action( 'edit_page_form', 'true_negative_editor' );
+		 
+		/*
+		 * функция сохранения данных
+		 */
+		 
+		function true_save_negative_editor($post_id){
+			update_post_meta($post_id, 'new-negative', $_POST['new-negative']);
+		}
+		 
+		add_action('save_post', 'true_save_negative_editor');
+		
 }
+/*4. БЛОК замены  слуга для всех записей, страниц, категорий, к формату сайт/имя поста */
 global $formone;
 $bets = new bets();
 ?>

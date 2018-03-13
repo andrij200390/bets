@@ -1,44 +1,446 @@
-.bets-info
+/*TOP BETS*/
+.type-bets
 {
-	margin-bottom: 25px;
+    
+    /*
+    margin: 0 0 2em 0;
+    padding: 1.5em;
+    background: #fff;
+    border-top: 3px solid #4db2ec;
+    box-shadow: 0 2px 2px #aaa;
+    max-width: 100%;
+    */
+    
+}
+#top-bets {
+    /*display: flex;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    align-content: stretch;*/
+    margin-bottom: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    /*background: #fff;
+    border-top: 3px solid #0bcda5;*/
+   /* box-shadow: 0 2px 2px #aaa;*/
+   
+}
+#top-bets .one-bets {
+    flex-basis: 193px;
+}
+#top-bets .td-module-image {
+    max-width: 190px;
+    position: relative;
+}
+#top-bets .rating
+{
+    max-width: 191px;
+    text-align: center;
+	width: 190px;
+}
+#top-bets .td-module-thumb {
+    max-height: 87px;
+    overflow: hidden;
+	float:left;
+	margin-right:5px;
+}
+#top-bets .td-module-thumb a {
+}
+#top-bets .td-post-category {
+    /*position: absolute;
+    bottom: 0;*/
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 1;
+    /*background-color: #1c1c1c;
+    color: #fff;*/
+    margin-right: 5px;
+    padding: 3px 6px 4px;
+    display: block;
+    vertical-align: top;
+}
+#top-bets .entry-title {
+    max-width: 180px;
+    text-align: center;
+    font: 100 14px/14px 'Open sans', Tahoma, Arial;
+}
+#top-bets .entry-title#top-bets .entry-title a {
+    font: 400 14px/14px 'Rokkitt', serif;
+}
+#top-bets .links-bets a{
+	font-size:12px;
+}
+/*карусель*/
+.carousel-button-left a, .carousel-button-right a{
+   width: 25px; 
+   height: 36px; 
+   position: relative;
+   top: 40px; 
+   cursor: pointer; 
+   text-decoration:none;
+}
+.carousel-button-left a{
+   float: left; 
+   background: url(../images/carousel-left.png); 
+}
+.carousel-button-right a{
+   float: right;
+   background: url(../images/carousel-right.png); 
+}
+.carousel  {
+   max-width: 1080px; /* ширина всего блока */
+   margin: 20px auto;
+   width:100%;
+}
+.carousel-wrapper {
+   margin: 10px 30px; /* отступы для стрелок */
+   overflow: hidden; /* скрываем содержимое, выходящее за рамки основной области */
+   position:relative;
+}
+.carousel-items {
+   width: 10000px; /* устанавливаем большую ширину для набора элементов */
+   position: relative; /* позиционируем блок относительно основной области карусели */
+}
+.carousel-block {
+   float: left; /* выстраиваем все элементы карусели в ряд */
+   width: 193px; /* задаём ширину каждого элемента */
+   border-top: solid 1px #0bcda5;
+    border-bottom: solid 1px #0bcda5;
+    padding: 10px 10px 10px 0px;
+    height: 95px;
+}
+.carousel-block img{
+	/*display:block;*/
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+/*карусель*/
+/*********** SHADOW ***********/
+.shadow{
+	box-shadow: 0px 0px 20px rgba(0, 0, 0, 1);
+    background: #fff;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+/*TOP BETS*/
+/*SINGLE BETS*/
+.bets-info {
+}
+.bets-info .tabs__content {
+  display: none; /* по умолчанию прячем все блоки */
+}
+.bets-info .tabs__content.active {
+  display: block; /* по умолчанию показываем нужный блок */
+}
+.tabs__content2 {
+  display: none; /* по умолчанию прячем все блоки */
+}
+.tabs__content2.active {
+  display: block; /* по умолчанию показываем нужный блок */
+}
+.bets-info #alxtabs-4 {
+    
+    margin-bottom: 15px;
+}
+.bets-info .bets-img {
+    max-width: 40%;
+    margin-right: 15px;
+    float: left;
+}
+.bets-info .bets-img img {
+    max-width: 100%;
+    height: auto;
+}
+.bets-info .alx-tabs-nav {
+}
+.bets-info .alx-tabs-nav li a
+{
+    background: #ebebeb;
+    padding: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    font-size:16px;
+	color:#777777;
+}
+.bets-info .alx-tabs-nav.bets-info .alx-tabs-nav.bets-info .alx-tabs-nav .alx-tab {
+}
+.bets-info .alx-tabs-nav .alx-tab.bets-info .alx-tabs-nav .alx-tab.bets-info .alx-tabs-nav .alx-tab a {
+}
+.bets-info .tabs__caption{
+    
+}
+.bets-info .alx-tabs-nav .alx-tab {
+    list-style: none;
+    float:left;
+    display:inline-block;
+    margin: 2px 10px;
+}
+.bets-info .alx-tabs-nav .alx-tab:last-child{
+    float: none;
+}
+.bets-info .alx-tabs-nav .alx-tab.bets-info .alx-tabs-nav .alx-tab a {
+}
+.bets-info .alx-tabs-nav .alx-tab {
+        padding: 0 5px;
+}
+.bets-info .alx-tabs-nav .alx-tab.bets-info .alx-tabs-nav .alx-tab a {
+
+}
+.bets-info .alx-tabs-container {
+    margin: 2px 10px;
+}
+.bets-info #tab-desc-bets {
+}
+.bets-info #tab-desc-bets.bets-info #tab-desc-bets header {
+}
+.bets-info #tab-desc-bets h3 {
+}
+.bets-info .col1 {
+}
+.bets-info .col1 .desc{
+    margin-bottom: 5px;
+}
+.bets-info .alx-tab .rating {
+    text-align: left;
+    margin-bottom: 5px;
+}
+.bets-info .rating img {
+}
+.bets-info .minrate {
+}
+.bets-info .minrate .fa {
+}
+.bets-info .mindep {
+}
+.bets-info .mindep .fa {
+}
+.bets-info .currency {
+    margin-bottom: 5px;
+}
+.bets-info .currency .fa {
+        padding-right: 10px;
     font-size: 18px;
 }
-.bets-info .desc
-{
-    border-bottom:solid 2px #4db2ec;
+.bets-info .currency .fa.bets-info .desc {
 }
-.bets-info .rating
-{
-    border-bottom:solid 2px #4db2ec;
+.bets-info .desc .fa {
+        padding-right: 10px;
+    font-size: 18px;
 }
-.bets-info .rating img
+.bets-info .desc .fa.bets-info .recomend {
+}
+.bets-info .recomend .green{
+    background: url(../images/hand.png) no-repeat;
+   
+    text-transform: uppercase;
+    padding-left: 30px;
+    height: 30px;
+    display: block;
+    line-height: 25px;
+}
+.bets-info .recomend .red{
+    background: url(../images/hand_down.png) no-repeat;
+    
+    text-transform: uppercase;
+    padding-left: 30px;
+    height: 30px;
+    display: block;
+    line-height: 25px;
+}
+.bets-info #tab-link-bets {
+}
+.bets-info #tab-link-bets.bets-info #tab-link-bets header {
+}
+.bets-info #tab-link-bets h3 {
+}
+.bets-info .link-home {
+    padding-right: 15px;
+}
+.bets-info .link-home .fa {
+    padding-right: 10px;
+    font-size: 18px;
+}
+.bets-info .link-home .fa.bets-info .link-home a {
+}
+.bets-info .link-reviews {
+}
+.bets-info .link-reviews .fa {
+    padding-right: 10px;
+    font-size: 18px;
+}
+.bets-info .link-reviews .fa.bets-info .link-reviews a {
+}
+.bets-info #tab-plus-bets {
+}
+.bets-info #tab-plus-bets.bets-info #tab-plus-bets header {
+}
+.bets-info #tab-plus-bets h3 {
+}
+.bets-info .pos {
+}
+.bets-info .poshead {
+    font-weight: bold;
+}
+.bets-info .poshead .fa {
+}
+.bets-info .poshead .fa.bets-info .poshead br {
+}
+.bets-info .positive {
+    margin-left: 20px;
+}
+.bets-info .neg {
+}
+.bets-info .neghead {
+    font-weight: bold;
+}
+.bets-info .neghead .fa {
+}
+.bets-info .neghead .fa.bets-info .neghead br {
+}
+.bets-info .negative {
+    margin-left: 20px;
+}
+.article__featured-image-link.bets-img{
+	float:left;
+}
+.article__featured-image-link.bets-img img{
+	-webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+.clear{
+	clear:both;
+}
+/*SIDEBAR*/
+.share a{
+	font-size:24px;
+	margin:0 5px;
+	padding:5px;
+}
+.sidebar-bets {
+    margin-bottom: 15px;
+    text-align: left;
+    display: flex;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+	background: #ebebeb;
+    padding: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.sidebar-bets .img-bets
 {
+	 width: 49%;
+    padding: 5px;
+}
+.sidebar-bets .img-bets .rating
+{
+	text-align:center;
+}
+.sidebar-bets .recomend{
+	text-align:center;
+}
+.sidebar-bets .recomend span{
+	font-size:11px;
+}
+.sidebar-bets .recomend span.green{
+	color: green;
+	font-weight:bold;
+}.sidebar-bets .recomend span.red{
+	color: red;
+	font-weight:bold;
+}
+.sidebar-bets .desc-bets
+{
+	width:47%;
+}
+.sidebar-bets .desc-bets a{
+	text-decoration:underline;
+	display:block;
+    padding-bottom: 7px;
+}
+.sidebar-bets .desc-bets a:hover
+{
+	text-decoration:none;
+}
+.sidebar-bets .desc-bets, .sidebar-bets .desc-bets span, .sidebar-bets .desc-bets span p
+{
+	font-size:12px;
+	color:#777;
+	line-height: 1.3;
+    margin-top: 0px;
+}
+.sidebar-bets .post_thumbnail img
+{
+	max-width:80%;
+	height:auto;
+	margin:0 auto;
+	display:block;
+}
+/*List bets*/
+.widget_bets .alx-tabs-nav li
+{
+    width: 50%;
+}
+.widget_bets .alx-tabs-nav li a
+{
+    font-size: 13px;
+    
+}
+ .alx-tab .rating img
+{
+    width:auto;
+    display: inline;
+}
+ .alx-tab .rating
+{
+    text-align: center;
+   
+}
+.alx-tab .img-bets
+{
+    width: 38%;
+    float: left;
+}
+.alx-tab .desc-bets
+{
+    width: 60%;
+    float: right;
+    font-size: 13px;
+}
+.alx-tab .desc-bets .green {
+    background: url(../images/hand.png) no-repeat;
+    font-size: 14px;
+    text-transform: uppercase;
+    padding-left: 30px;
+    height: 30px;
+    display: block;
+    line-height: 25px;
+}
+.alx-tab .desc-bets .red {
+    background: url(../images/hand_down.png) no-repeat;
+    font-size: 14px;
+    text-transform: uppercase;
+    padding-left: 30px;
+    height: 30px;
+    display: block;
+    line-height: 25px;
+}
+.alx-tab .desc-bets .link-betsite
+{
+    background: #c3c3c3;
+    padding: 5px;
+    margin-top: 0px;
     display: inline-block;
-    margin-bottom: 10px;
 }
-.bets-info .recomend
-{
-    border-bottom:solid 2px #4db2ec;
-}
-.bets-info .recomend .green
-{
-    color:green;
-}
-.bets-info .recomend .red
-{
-    color:crimson;
-}
-.bets-info .posneg
-{
-    border-bottom:solid 2px #4db2ec;
-}
-.bets-info .posneg .positive
-{
-    margin-left: 20px;
-    color:green;
-}
-.bets-info .posneg .negative
-{
-    margin-left: 20px;
-    color:crimson;
-}
+/*List bets*/
+/*SIDEBAR*/

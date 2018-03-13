@@ -1,126 +1,98 @@
 <?php
 /**
- * the custom taxonomy template
- * This file is loaded by WordPress on custom taxonomies. You can further customize this template
- * for specific taxonomies by copying this file to taxonomy-yourTaxonomyName.php
+ * The template for displaying all pages.
+ *
+ * This is the template that displays all pages by default.
+ * Please note that this is the WordPress construct of pages
+ * and that other 'pages' on your WordPress site will use a
+ * different template.
+ *
+ * @package consultpresslite-pt
  */
 
 get_header();
 
-global $loop_module_id, $loop_sidebar_position;
-
-// get the current taxonomy object - note that it's note complete
-$current_term_obj = get_queried_object();
-
-//read the loop variables for this specific taxonomy
-$loop_module_id = td_util::get_taxonomy_option($current_term_obj->taxonomy, 'tds_taxonomy_page_layout');
-$loop_sidebar_position = td_util::get_taxonomy_option($current_term_obj->taxonomy, 'tds_taxonomy_sidebar_pos');
-
-if (empty($loop_module_id)) {
-    $loop_module_id = 1; // module_1 is the default
-}
-
-// sidebar position used to align the breadcrumb on sidebar left + sidebar first on mobile issue
-$td_sidebar_position = '';
-if($loop_sidebar_position == 'sidebar_left') {
-    $td_sidebar_position = 'td-sidebar-left';
-}
-
 ?>
 
-    <div class="td-main-content-wrap">
-        <div class="td-container <?php echo $td_sidebar_position; ?>">
-            <div class="td-crumb-container">
-                <?php echo td_page_generator::get_taxonomy_breadcrumbs($current_term_obj); // get the breadcrumbs - /includes/wp_booster/td_page_generator.php ?>
-            </div>
+	<div id="primary" class="content-area  container">
+		<div class="row">
+			<main id="main" class="site-main  col-xs-12  col-lg-9">
+				<?php while ( have_posts() ) : the_post(); ?>
 
-            <!-- content -->
-            <div class="td-pb-row">
-                <?php
-                switch ($loop_sidebar_position) {
+				<article id="post-<?php the_ID(); ?>" <?php post_class( array( 'h-entry', 'clearfix' ) ); ?>>
+					<!-- Featured Image and Date -->
+					<?php if ( has_post_thumbnail() ) : ?>
+						<a class="article__featured-image-link" href="<?php the_permalink(); ?>">
+							<?php the_post_thumbnail( 'post-thumbnail', array( 'class' => 'img-fluid  article__featured-image  u-photo' ) ); ?>
+						</a>
+					<?php endif; ?>
 
-                    default: //default: sidebar right
-                        ?>
-                        <div class="td-pb-span8 td-main-content">
-                            <div class="td-ss-main-content">
-                                <div class="td-page-header">
-                                    <h1 class="entry-title td-page-title">
-                                        <span><?php echo $current_term_obj->name ?></span>
-                                    </h1>
-                                </div>
-                                <?/*
-                                     <?php $bets = new WP_Query( array( 'post_type' => 'bets', 'posts_per_page' => 2 ) ); ?>
-
-                                <?php while ( $bets->have_posts() ) : $bets->the_post(); ?>
-
-                                 <div id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-                                <?php if ( (function_exists('has_post_thumbnail')) && (has_post_thumbnail()) ) : ?>
-                                 <a class="post_thumbnail" href="<?php the_permalink(); ?>" title="<?php the_title(); ?>" alt=""><?php the_post_thumbnail(array( 334,174)); ?></a>
-                                <?php endif; ?>
-                                <a href="<?php the_permalink() ?>"><?php the_title(); ?></a>
-                                </div><!-- post -->
-                                <?php endwhile; ?>
-                                <?php wp_reset_postdata(); ?> 
-                                */?>
-
-                                 <?php locate_template('loop.php', true);?>
-                                <?php echo td_page_generator::get_pagination(); ?>
+					<!-- Content Box -->
+					<div class="article__content">
+						
+						<span class="article__author"><a href="<?php echo get_permalink();?>">Обзор</a></span> <span class="article__author"><a href="<?php echo get_post_meta( get_the_ID(), 'betsite', true ) ; ?>">Сайт</a></span>
+							
+						<div class="rating" style="display:inline-block;">
+					
+                                <?php 
+                                 $nb_stars = intval( get_post_meta( get_the_ID(), 'rating', true ) );
+                                for ( $star_counter = 1; $star_counter <= 5; $star_counter++ ) {
+                                    if ( $star_counter <= $nb_stars ) {
+                                        echo '<img src="' . plugins_url( 'bets/images/icon.png' ) . '" />';
+                                         } else {
+                                            echo '<img src="' . plugins_url( 'bets/images/grey.png' ). '" />';
+                                        }
+                                    }
+                                ?>
                             </div>
-                        </div>
+						<!-- Content -->
+						<?php the_title( sprintf( '<h2 class="article__title  p-name"><a class="article__title-link  u-url" href="%s" rel="bookmark">', esc_url( get_permalink() ) ), '</a></h2>' ); ?>
+						<?php
+						$consultpresslite_is_excerpt = ( 1 === (int) get_option( 'rss_use_excerpt', 0 ) );
+						if ( $consultpresslite_is_excerpt ) : ?>
+							<p class="e-content">
+								<?php echo wp_kses_post( get_the_excerpt() ); ?>
+							</p>
+							<p>
+								<a href="<?php echo esc_url( get_permalink() ); ?>" class="more-link"><?php printf( esc_html__( 'Read more %s', 'consultpress-lite' ), the_title( '<span class="screen-reader-text">', '</span>', false ) ); ?></a>
+							</p>
+						<?php else :
+							/* translators: %s: Name of current post */
+							the_content( sprintf(
+								esc_html__( 'Read more %s', 'consultpress-lite' ),
+								the_title( '<span class="screen-reader-text">"', '"</span>', false )
+							) );
+						endif;
+						?>
+					</div><!-- .article__content -->
+				</article><!-- .article -->
 
-                        <div class="td-pb-span4 td-main-sidebar">
-                            <div class="td-ss-main-sidebar">
-                                <?php get_sidebar(); ?>
-                            </div>
-                        </div>
-                        <?php
-                        break;
+					<?php
+					// If comments are open or we have at least one comment, load up the comment template.
+					if ( comments_open() || get_comments_number() ) {
+						comments_template();
+					}
+					?>
 
+				<?php endwhile; // End of the loop. ?>
+			</main>
 
-                    case 'sidebar_left':
-                        ?>
-                        <div class="td-pb-span8 td-main-content <?php echo $td_sidebar_position ?>-content">
-                            <div class="td-ss-main-content">
-                                <div class="td-page-header">
-                                    <h1 class="entry-title td-page-title">
-                                        <span><?php echo $current_term_obj->name ?></span>
-                                    </h1>
-                                </div>
-                                <?php locate_template('loop.php', true);?>
-                                <?php echo td_page_generator::get_pagination(); ?>
-                            </div>
-                        </div>
-                        <div class="td-pb-span4 td-main-sidebar">
-                            <div class="td-ss-main-sidebar">
-                                <?php get_sidebar(); ?>
-                            </div>
-                        </div>
-                        <?php
+			<div class="col-xs-12  col-lg-3">
+				<div class="sidebar  js-sidebar">
+					<div class="sidebar__shift">
+						<!-- Header widget area -->
+						<?php get_template_part( 'template-parts/header-widget-area' ); ?>
+						<!-- Featured Button -->
+						<?php get_template_part( 'template-parts/featured-button' ); ?>
+						<!-- Main Navigation -->
+						<?php get_template_part( 'template-parts/main-navigation' ); ?>
+						<!-- Sidebar -->
+						<?php dynamic_sidebar( apply_filters( 'consultpresslite_regular_page_sidebar', 'regular-page-sidebar', get_the_ID() ) ); ?>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
-                        break;
-
-
-                    case 'no_sidebar':
-                        ?>
-                        <div class="td-pb-span12 td-main-content">
-                            <div class="td-ss-main-content">
-                                <div class="td-page-header">
-                                    <h1 class="entry-title td-page-title">
-                                        <span><?php echo $current_term_obj->name ?></span>
-                                    </h1>
-                                </div>
-                                <?php locate_template('loop.php', true);?>
-                                <?php echo td_page_generator::get_pagination(); ?>
-                            </div>
-                        </div>
-                        <?php
-                        break;
-                }
-                ?>
-            </div> <!-- /.td-pb-row -->
-        </div> <!-- /.td-container -->
-    </div> <!-- /.td-main-content-wrap -->
-
-<?php
-
-get_footer();
+<?php get_footer(); ?>
+                           
